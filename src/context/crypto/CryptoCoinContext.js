@@ -1,8 +1,9 @@
 import { createContext,useEffect,useReducer } from "react";
 import cryptoCoinReducer from "./CryptoCoinReducer";
 const CryptoCoinContext=createContext() 
-export const CryptoCoinProvider=({children})=>{   
-
+export const CryptoCoinProvider=({children})=>{  
+      
+    const apiKey=process.env.REACT_APP_CRYPTOX_API_KEY;
     const initialState={
         coins:[],
         loading:false, 
@@ -33,7 +34,7 @@ export const CryptoCoinProvider=({children})=>{
             const options = {
                 method: 'GET',
                 headers: {
-                    'X-RapidAPI-Key': 'ee689010a7msh15fefff9efe2a0cp11f207jsnb6b3224c5b26',
+                    'X-RapidAPI-Key':"ee689010a7msh15fefff9efe2a0cp11f207jsnb6b3224c5b26",
                     'X-RapidAPI-Host': 'coinranking1.p.rapidapi.com'
                 }
             };
@@ -46,7 +47,7 @@ export const CryptoCoinProvider=({children})=>{
             })
         };
         callApi()
-    },[])
+    },[apiKey])
     return<CryptoCoinContext.Provider value={{  
         coins:state.coins,
         loading:state.loading, 

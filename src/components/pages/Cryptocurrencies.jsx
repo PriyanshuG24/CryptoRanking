@@ -4,6 +4,7 @@ import Currency from './Currency';
 import ReactPaginate from 'react-paginate';
 import CryptoCoinContext from '../../context/crypto/CryptoCoinContext';
 import CoinNav from '../layout/CoinNav';
+import Spinner from '../../utility/Spinner';
 function Cryptocurrencies() {
     const { coins, loading } = useContext(CryptoCoinContext)
     const [currentPage, setCurrentPage] = useState(0);
@@ -37,7 +38,7 @@ function Cryptocurrencies() {
         )
 
     };
-    return (
+    return loading ? <Spinner/> : (
         <>
             <div className='border-2 py-20 h-96'>
                 <div className='mx-40 mb-60'>

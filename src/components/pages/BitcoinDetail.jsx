@@ -1,23 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Graph from '../layout/Graph';
 import { Link } from 'react-router-dom';
 import SupplyInfo from './SupplyInfo';
 import ValueStatistics from './ValueStatistics';
+import Spinner from '../../utility/Spinner';
 
 function BitcoinDetail() {
+  const apiKey=process.env.REACT_APP_CRYPTOX_APIKEY;
   const location = useLocation();
+  const [loading, setLoading] = useState(true); 
   const queryParams = new URLSearchParams(location.search);
   const uuid = queryParams.get('uuid');
   const [bitCoinData, setBitCoinData] = useState({ sparkline: [], change: null });
   const [bitCoinDataOHLC, setBitCoinDataOHLC] = useState({ low: null, high: null, avg: null });
   useEffect(() => {
+    setLoading(true)
     const callApi = async () => {
       const url = `https://coinranking1.p.rapidapi.com/coin/${uuid}?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=24h`;
       const options = {
         method: 'GET',
         headers: {
-          'X-RapidAPI-Key': 'ee689010a7msh15fefff9efe2a0cp11f207jsnb6b3224c5b26',
+          'X-RapidAPI-Key': "ee689010a7msh15fefff9efe2a0cp11f207jsnb6b3224c5b26",
           'X-RapidAPI-Host': 'coinranking1.p.rapidapi.com'
         }
       };
@@ -25,17 +29,19 @@ function BitcoinDetail() {
       const response = await fetch(url, options);
       const data = await response.json();
       setBitCoinData(data.data.coin);
+      setLoading(false)
     };
 
     callApi();
-  }, [uuid]);
+  }, [uuid,apiKey]);
   useEffect(() => {
+    setLoading(true)
     const callApi = async () => {
       const url = 'https://coinranking1.p.rapidapi.com/coin/Qwsogvtv82FCd/ohlc?referenceCurrencyUuid=yhjMzLPhuIDl&interval=day';
       const options = {
         method: 'GET',
         headers: {
-          'X-RapidAPI-Key': 'ee689010a7msh15fefff9efe2a0cp11f207jsnb6b3224c5b26',
+          'X-RapidAPI-Key': "ee689010a7msh15fefff9efe2a0cp11f207jsnb6b3224c5b26",
           'X-RapidAPI-Host': 'coinranking1.p.rapidapi.com'
         }
       };
@@ -45,17 +51,18 @@ function BitcoinDetail() {
         const result = await response.json();
         console.log(result.data.ohlc[0]);
         setBitCoinDataOHLC(result.data.ohlc[0]);
+        setLoading(false)
       } catch (error) {
         console.error(error);
       }
     }
     callApi();
-  }, [uuid])
+  }, [uuid,apiKey])
   console.log(bitCoinData)
   const roundToMillion = (value) => {
     return ((value / 1000000).toFixed(2)) * 80;
   }
-  return (
+  return loading ? <Spinner/> : (
     <>
       <div className='border-4 '>
         <div className='flex items-center space-x-2 mx-10 my-10 text-lg text-gray-600 font-medium' >
